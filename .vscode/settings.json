@@ -7,6 +7,10 @@
         "/^cd '/Users/asif/Documents/Level 2' && printf 'dirs in Level 2:\\\\n' && find \\. -maxdepth 2 -type d \\| sort \\| sed 's#\\^\\./##' \\| cat && printf '\\\\nfiles in Prisma Module dir:\\\\n' && find '\\./Prisma Module ' -maxdepth 2 -type f \\| sort \\| cat$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^pwd && ls && node -e \"try \\{ const m = require\\('@prisma/client'\\); console\\.log\\(typeof m, Object\\.keys\\(m\\)\\.slice\\(0,10\\)\\); \\} catch \\(e\\) \\{ console\\.error\\(e\\); process\\.exit\\(1\\); \\}\"$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }
