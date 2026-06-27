@@ -22,7 +22,7 @@ const registerUserIntoDB = async (payload: RegisterUserPayload) =>{
             password: hashedPassword,
             profile:{
                 create:{
-                    profilePhoto
+                    profilePhoto 
                 }
             }
         }

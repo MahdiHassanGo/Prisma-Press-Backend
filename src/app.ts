@@ -19,7 +19,7 @@ app.use(cookieParser())
 
 
 app.get("/",(req : Request, res : Response) => {
-    res.send("Hello, World!");
+    res.send("Prisma Press Running !");
 });
 
 // app.post()
