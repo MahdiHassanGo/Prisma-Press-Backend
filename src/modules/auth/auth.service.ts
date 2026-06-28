@@ -31,7 +31,7 @@ const loginUser = async (payload: ILoginUsers) => {
 const accessToken = jwtUtils.createToken(
     jwtPayload,
     config.jwt_access_secret,
-    config.jwt_access_expires_in as SignOptions
+    { expiresIn: config.jwt_access_expires_in }
 )
 
 
@@ -43,7 +43,7 @@ const accessToken = jwtUtils.createToken(
 const refreshToken= jwtUtils.createToken(
     jwtPayload,
     config.jwt_refresh_secret,
-    config.jwt_refresh_expires_in as SignOptions
+    { expiresIn: config.jwt_refresh_expires_in }
 )
 
   return {
