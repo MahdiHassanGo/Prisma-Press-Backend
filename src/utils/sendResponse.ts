@@ -1,6 +1,6 @@
 
 import { Response } from 'express';
-import { httpStatus } from 'http-status';
+import httpStatus from 'http-status';
 
 type TMeta = {
     page: number,
