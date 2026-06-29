@@ -1,57 +1,77 @@
 import bcrypt from "bcryptjs";
-import { prisma } from "../../lib/prisma";
-import { ILoginUsers } from "./auth.interface";
-import jwt, { SignOptions } from "jsonwebtoken";
+import { SignOptions } from "jsonwebtoken";
 import config from "../../config";
+import { prisma } from "../../lib/prisma";
 import { jwtUtils } from "../../utils/jwt";
-const loginUser = async (payload: ILoginUsers) => {
-  const { email, password } = payload;
-  const user = await prisma.user.findUniqueOrThrow({
-    where: { email },
-  });
+import { ILoginUser } from "./auth.interface";
 
-  const isPasswordMatched = await bcrypt.compare(password, user.password);
+const loginUser = async (payload : ILoginUser) => {
+    const { email, password } = payload;
 
-  if (!isPasswordMatched) {
-    throw new Error("Password is incorrect ");
-  }
+    // const user = await prisma.user.findUnique({
+    //     where : {email}
+    // })
 
-  const jwtPayload = {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-  };
+    // if(!user){
+    //     throw new Error("User not found");
+    // }
 
-//   const accessToken = jwt.sign({ jwtPayload }, config.jwt_access_secret, {
-//     expiresIn: config.jwt_access_expires_in,
-//   } as SignOptions 
-// );
+    const user = await prisma.user.findUniqueOrThrow({
+        where : {email}
+    })
 
-const accessToken = jwtUtils.createToken(
-    jwtPayload,
-    config.jwt_access_secret,
-    { expiresIn: config.jwt_access_expires_in }
-)
+    if (user.activeStatus === "BLOCKED") {
+        throw new Error("Your account has been blocked. Please contact support.");
+    }
 
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
 
+    if(!isPasswordMatched){
+        throw new Error("Password is incorrect");
+    }
 
-//   const refreshToken = jwt.sign({ jwtPayload }, config.jwt_refresh_secret, {
-//     expiresIn: config.jwt_refresh_expires_in,
-//   } as SignOptions);
+    const jwtPayload = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+    }
 
-const refreshToken= jwtUtils.createToken(
-    jwtPayload,
-    config.jwt_refresh_secret,
-    { expiresIn: config.jwt_refresh_expires_in }
-)
+    // const accessToken = jwt.sign(
+    //     jwtPayload, 
+    //     config.jwt_access_secret, 
+    //     {
+    //         expiresIn : config.jwt_access_expires_in
+    //     } as SignOptions
+    // )
 
-  return {
-    accessToken,
-    refreshToken,
-  };
-};
+    const accessToken = jwtUtils.createToken(
+        jwtPayload,
+        config.jwt_access_secret,
+        config.jwt_access_expires_in as SignOptions
+    );
+
+    // const refreshToken = jwt.sign(
+    //     jwtPayload, 
+    //     config.jwt_refresh_secret, 
+    //     {
+    //         expiresIn : config.jwt_refresh_expires_in
+    //     } as SignOptions
+    // );
+
+    const refreshToken = jwtUtils.createToken(
+        jwtPayload,
+        config.jwt_refresh_secret,
+        config.jwt_refresh_expires_in as SignOptions
+    );
+
+    return {
+        accessToken,
+        refreshToken
+    };
+}
+
 
 export const authService = {
-  loginUser,
-};
+    loginUser
+}
