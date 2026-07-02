@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { authService } from "./auth.service";
+import { send } from "node:process";
 
 const loginUser = catchAsync(async (req : Request, res : Response, next : NextFunction) => {
     const payload = req.body;
@@ -31,6 +32,19 @@ const loginUser = catchAsync(async (req : Request, res : Response, next : NextFu
     });
 });
 
+const refreshToken = catchAsync(async (req : Request, res : Response, next : NextFunction) => {
+const refreshToken = req.cookies.refreshToken; 
+    const {accessToken} = await authService.refreshToken(refreshToken);
+    sendResponse(res,{
+        success:true,
+        statusCode:httpStatus.OK,
+        message:'Token refreshed',
+        data:{accessToken}
+    })
+
+})
+
 export const authController = {
-    loginUser
+    loginUser,
+    refreshToken
 }
