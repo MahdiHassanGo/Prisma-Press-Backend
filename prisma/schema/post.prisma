@@ -1,6 +1,7 @@
-model Post {
+model Post {  
   id         String     @id @default(uuid())
-  title      String     @db.Text
+  title      String     @db.VarChar(255)
+  content    String     @db.Text
   thumbnail  String?
   isFeatured Boolean    @default(false)
   status     PostStatus @default(PUBLISHED)
@@ -10,7 +11,8 @@ model Post {
   updatedAt  DateTime   @updatedAt
 
   authorId String
-  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
   comments Comment[]
 
   @@index([authorId])
